@@ -1,31 +1,42 @@
 import React, { useState } from "react";
 import "./App.css";
 
-/* Navbar Component with Sidebar Toggle Button */
-function Navbar({ onSidebarToggle }) {
+/* Navbar Component */
+function Navbar({ onSidebarToggle, onThemeToggle, theme }) {
   return (
     <header className="app-navbar">
-      <button className="sidebar-toggle-btn" onClick={onSidebarToggle}>
-        ☰
+      <div className="navbar-left">
+        <button className="sidebar-toggle-btn" onClick={onSidebarToggle}>
+          ☰
+        </button>
+        <div className="nav-title">ChatGPT Clone</div>
+      </div>
+      <button className="theme-toggle-btn" onClick={onThemeToggle}>
+        {theme === "dark" ? "🌞 Light Mode" : "🌙 Dark Mode"}
       </button>
-      <h1>Flash</h1>
     </header>
   );
 }
 
 /* Sidebar Component */
-function Sidebar({ chatHistory, onNewChat, onSelectChat }) {
+function Sidebar({ chatHistory, onNewChat, onSelectChat, isOpen }) {
   return (
-    <aside className="app-sidebar">
+    <aside
+      className={`app-sidebar ${isOpen ? "sidebar-open" : "sidebar-closed"}`}
+    >
       <div className="sidebar-header">
-        <h3>Chat History</h3>
+        <span>Chat History</span>
         <button onClick={onNewChat} className="new-chat-button">
           + New Chat
         </button>
       </div>
       <ul className="chat-history">
         {chatHistory.map((session, index) => (
-          <li key={index} onClick={() => onSelectChat(session)}>
+          <li
+            key={index}
+            onClick={() => onSelectChat(session)}
+            className="chat-history-item"
+          >
             {session}
           </li>
         ))}
@@ -37,7 +48,7 @@ function Sidebar({ chatHistory, onNewChat, onSelectChat }) {
 /* Chat Area Component */
 function ChatArea({ messages, input, onInputChange, onSend }) {
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       onSend();
     }
@@ -58,8 +69,7 @@ function ChatArea({ messages, input, onInputChange, onSend }) {
         ))}
       </div>
       <div className="chat-input-section">
-        <input
-          type="text"
+        <textarea
           placeholder="Type your message..."
           value={input}
           onChange={onInputChange}
@@ -74,57 +84,64 @@ function ChatArea({ messages, input, onInputChange, onSend }) {
   );
 }
 
-/* Main UI Component */
+/* Main App Component */
 function App() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [chatHistory, setChatHistory] = useState(["Session 1", "Session 2"]);
-  const [sidebarVisible, setSidebarVisible] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // Sidebar starts closed
+  const [theme, setTheme] = useState("dark"); // Default to dark mode
 
   const handleSend = () => {
     if (!input.trim()) return;
     const userMessage = { sender: "user", text: input };
     const botResponse = {
       sender: "bot",
-      text: "This is a placeholder response.",
+      text: `You said: "${input}"`,
     };
-
     setMessages((prevMessages) => [...prevMessages, userMessage, botResponse]);
     setInput("");
   };
 
   const handleNewChat = () => {
-    const newSession = `Session ${chatHistory.length + 1}`;
-    setChatHistory([...chatHistory, newSession]);
+    setChatHistory((prevHistory) => [
+      ...prevHistory,
+      `Session ${prevHistory.length + 1}`,
+    ]);
     setMessages([]);
   };
 
   const handleSelectChat = (session) => {
-    setMessages([]);
+    alert(`Selected: ${session}`);
   };
 
-  const toggleSidebar = () => {
-    setSidebarVisible((prevVisible) => !prevVisible);
+  const handleThemeToggle = () => {
+    setTheme((prevTheme) => (prevTheme === "dark" ? "light" : "dark"));
+    document.documentElement.setAttribute(
+      "data-theme",
+      theme === "dark" ? "light" : "dark"
+    );
   };
 
   return (
     <div className="app-container">
-      <Navbar onSidebarToggle={toggleSidebar} />
-      <div className="main-content">
-        {sidebarVisible && (
-          <Sidebar
-            chatHistory={chatHistory}
-            onNewChat={handleNewChat}
-            onSelectChat={handleSelectChat}
-          />
-        )}
-        <ChatArea
-          messages={messages}
-          input={input}
-          onInputChange={(e) => setInput(e.target.value)}
-          onSend={handleSend}
-        />
-      </div>
+      <Navbar
+        onSidebarToggle={() => setSidebarOpen(!sidebarOpen)}
+        onThemeToggle={handleThemeToggle}
+        theme={theme}
+      />
+      <Sidebar
+        chatHistory={chatHistory}
+        onNewChat={handleNewChat}
+        onSelectChat={handleSelectChat}
+        isOpen={sidebarOpen}
+      />
+      <ChatArea
+        messages={messages}
+        input={input}
+        onInputChange={(e) => setInput(e.target.value)}
+        onSend={handleSend}
+      />
     </div>
   );
 }
