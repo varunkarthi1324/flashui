@@ -1,38 +1,210 @@
-.App {
-  text-align: center;
+/* Reset & Global Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: #202123; /* Dark background for ChatGPT-like theme */
+  color: #e8e8e8; /* Light text for contrast */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* Main Container */
+.app-container {
   display: flex;
   flex-direction: column;
+  height: 100vh;
+}
+
+/* Navbar Styles */
+.app-navbar {
+  background-color: #343541; /* Dark grey navbar */
+  color: #e8e8e8;
+  padding: 15px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 500;
+  display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.sidebar-toggle-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  transition: transform 0.3s ease, color 0.3s ease;
+  margin-right: 10px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.sidebar-toggle-btn:hover {
+  transform: scale(1.1);
+  color: #10a37f; /* ChatGPT-inspired green hover color */
+}
+
+.chatgpt-icon {
+  width: 28px;
+  height: 28px;
+  stroke: #fff;
+  fill: transparent;
+  transition: transform 0.3s ease, stroke 0.3s ease;
+}
+
+.chatgpt-icon:hover {
+  stroke: #10a37f;
+}
+
+/* Layout of Main Content */
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Sidebar (Chat History) */
+.app-sidebar {
+  width: 35%; /* Increase the width of the sidebar (default is 25%) */
+  min-width: 300px; /* Optional: Set a minimum width for better responsiveness */
+  background-color: #2a2b32;
+  border-right: 1px solid #3f4047;
+  padding: 20px;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.new-chat-button {
+  background-color: #343541;
+  color: #e8e8e8;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.new-chat-button:hover {
+  background-color: #4a4b53; /* Slightly lighter hover */
+  transform: scale(1.05);
+}
+
+.chat-history {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  max-height: calc(100vh - 140px);
+}
+
+.chat-history li {
+  padding: 10px;
+  border: 1px solid #3f4047;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #343541;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.chat-history li:hover {
+  background-color: #4a4b53;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Chat Area */
+.chat-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #202123;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.chat-message {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 20px;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.user-message {
+  align-self: flex-end;
+  background-color: #4a4b53; /* Dark grey bubble for user */
+  color: #e8e8e8;
+}
+
+.bot-message {
+  align-self: flex-start;
+  background-color: #343541; /* Slightly darker grey for bot */
+  color: #e8e8e8;
+}
+
+/* Chat Input Section */
+.chat-input-section {
+  display: flex;
+  padding: 15px;
+  background-color: #343541;
+  border-top: 1px solid #3f4047;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 10px 15px;
+  border: 1px solid #3f4047;
+  border-radius: 20px;
+  font-size: 15px;
+  outline: none;
+  background-color: #2a2b32;
+  color: #e8e8e8;
+}
+
+.send-button {
+  background-color: #4a4b53;
+  color: #e8e8e8;
+  border: none;
+  padding: 10px 20px;
+  margin-left: 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.send-button:hover {
+  background-color: #5a5b63;
+  transform: translateY(-2px);
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 768px) {
+  .main-content {
+    flex-direction: column;
   }
-  to {
-    transform: rotate(360deg);
+  .app-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #3f4047;
+    max-height: 200px;
+  }
+  .chat-area {
+    flex: 1;
   }
 }
