@@ -103,17 +103,37 @@ document.getElementById("output").innerHTML = "<h2>Hello, World!</h2><p>This is 
       const sandbox = document.createElement("div");
       sandbox.id = "output";
 
-      // Create a function to execute the code with access to the sandbox
-      const executeCode = new Function("document", codeToEvaluate);
+      // Instead of using new Function, use a safer approach
+      // that isolates the code execution
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      document.body.appendChild(iframe);
 
-      // Execute the code with the sandbox as the document
-      executeCode({ getElementById: () => sandbox });
+      // Set up the iframe content
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+      iframeDoc.open();
+      iframeDoc.write(`
+        <div id="output"></div>
+        <script>
+          try {
+            const output = document.getElementById('output');
+            ${codeToEvaluate}
+          } catch(error) {
+            document.getElementById('output').innerHTML = 'Error: ' + error.message;
+          }
+        </script>
+      `);
+      iframeDoc.close();
 
-      // Get the output
-      return (
-        sandbox.innerHTML ||
-        "Code executed successfully but produced no output."
-      );
+      // Get the output from the iframe
+      const output =
+        iframeDoc.getElementById("output").innerHTML ||
+        "Code executed successfully but produced no output.";
+
+      // Clean up
+      document.body.removeChild(iframe);
+
+      return output;
     } catch (err) {
       return `Error: ${err.message}`;
     }
@@ -255,8 +275,8 @@ const CodeEditorWithPreview = ({ code, onCodeChange, output }) => {
       </div>
       <div className="preview-pane">
         <div className="output-header">Output</div>
-        <div 
-          className="output-content" 
+        <div
+          className="output-content"
           dangerouslySetInnerHTML={{ __html: output }}
         />
       </div>
@@ -653,21 +673,37 @@ const ChatInterface = ({
   useEffect(() => {
     if (codeMode) {
       try {
-        // Create a sandbox to run the code safely
-        const sandbox = document.createElement("div");
-        sandbox.id = "output";
+        // Create a sandbox iframe to run the code safely
+        const iframe = document.createElement("iframe");
+        iframe.style.display = "none";
+        document.body.appendChild(iframe);
 
-        // Create a function to execute the code with access to the sandbox
-        const executeCode = new Function("document", code);
+        // Set up the iframe content
+        const iframeDoc =
+          iframe.contentDocument || iframe.contentWindow.document;
+        iframeDoc.open();
+        iframeDoc.write(`
+          <div id="output"></div>
+          <script>
+            try {
+              const output = document.getElementById('output');
+              ${code}
+            } catch(error) {
+              document.getElementById('output').innerHTML = 'Error: ' + error.message;
+            }
+          </script>
+        `);
+        iframeDoc.close();
 
-        // Execute the code with the sandbox as the document
-        executeCode({ getElementById: () => sandbox });
+        // Get the output from the iframe
+        const output =
+          iframeDoc.getElementById("output").innerHTML ||
+          "Code executed successfully but produced no output.";
 
-        // Get the output
-        setCodeOutput(
-          sandbox.innerHTML ||
-            "Code executed successfully but produced no output."
-        );
+        // Clean up
+        document.body.removeChild(iframe);
+
+        setCodeOutput(output);
       } catch (err) {
         setCodeOutput(`Error: ${err.message}`);
       }
