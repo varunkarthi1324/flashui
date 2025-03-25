@@ -231,40 +231,7 @@ const ReactMarkdown = ({ children }) => {
   return <div dangerouslySetInnerHTML={{ __html: formatted }} />;
 };
 
-// Code Editor Component
-const CodeEditor = ({ code, onCodeChange, onRun }) => {
-  return (
-    <div className="code-editor">
-      <div className="code-header">
-        <span>JavaScript</span>
-        <button className="run-button" onClick={onRun}>
-          Run
-        </button>
-      </div>
-      <textarea
-        className="code-textarea"
-        value={code}
-        onChange={(e) => onCodeChange(e.target.value)}
-        spellCheck="false"
-      />
-    </div>
-  );
-};
-
-// Code Output Component
-const CodeOutput = ({ output }) => {
-  return (
-    <div className="code-output">
-      <div className="output-header">Output</div>
-      <div
-        className="output-content"
-        dangerouslySetInnerHTML={{ __html: output }}
-      />
-    </div>
-  );
-};
-
-// Split Screen Code Editor with Preview
+// Updated CodeEditorWithPreview Component
 const CodeEditorWithPreview = ({ code, onCodeChange, output }) => {
   const runCode = () => {
     onCodeChange(code); // Trigger a re-evaluation
@@ -272,8 +239,27 @@ const CodeEditorWithPreview = ({ code, onCodeChange, output }) => {
 
   return (
     <div className="split-screen-editor">
-      <CodeEditor code={code} onCodeChange={onCodeChange} onRun={runCode} />
-      <CodeOutput output={output} />
+      <div className="editor-pane">
+        <div className="code-header">
+          <span>JavaScript</span>
+          <button className="run-button" onClick={runCode}>
+            Run
+          </button>
+        </div>
+        <textarea
+          className="code-textarea"
+          value={code}
+          onChange={(e) => onCodeChange(e.target.value)}
+          spellCheck="false"
+        />
+      </div>
+      <div className="preview-pane">
+        <div className="output-header">Output</div>
+        <div 
+          className="output-content" 
+          dangerouslySetInnerHTML={{ __html: output }}
+        />
+      </div>
     </div>
   );
 };

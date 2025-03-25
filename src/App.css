@@ -25,6 +25,8 @@
   --ring: #0f1115;
   --radius: 0.5rem;
   --yellow: #facc15;
+  --accent-color: #4a90e2;
+  --accent-hover-color: #3a7bd5;
 }
 
 .dark {
@@ -45,6 +47,54 @@
   --border: #27272a;
   --input: #27272a;
   --ring: #d4d4d8;
+  --accent-color: #4a90e2;
+  --accent-hover-color: #3a7bd5;
+}
+
+/* New Code Toggle Button Styles */
+.code-toggle-button {
+  background-color: var(--accent-color, #4a90e2);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  transform: scale(1);
+  cursor: pointer;
+}
+
+.code-toggle-button:hover {
+  background-color: var(--accent-hover-color, #3a7bd5);
+  transform: scale(1.05);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.code-toggle-button:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.code-toggle-button svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2.5;
+}
+
+/* Dark mode and light mode color adjustments */
+.dark .code-toggle-button {
+  background-color: var(--accent-color, #4a90e2);
+  color: white;
+}
+
+.light .code-toggle-button {
+  background-color: var(--accent-color, #4a90e2);
+  color: white;
 }
 
 body {
@@ -712,4 +762,90 @@ body {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+/* Split Screen Code Editor Styles */
+.split-screen-code-editor {
+  display: flex;
+  width: 100%;
+  height: 300px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.split-screen-code-editor .editor-pane,
+.split-screen-code-editor .preview-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.split-screen-code-editor .editor-pane {
+  border-right: 1px solid var(--border);
+}
+
+.split-screen-code-editor .code-header,
+.split-screen-code-editor .output-header {
+  background-color: var(--secondary);
+  padding: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.split-screen-code-editor .code-textarea {
+  flex: 1;
+  width: 100%;
+  padding: 0.5rem;
+  background-color: var(--background);
+  color: var(--foreground);
+  border: none;
+  resize: none;
+  font-family: monospace;
+  outline: none;
+}
+
+.split-screen-code-editor .output-content {
+  flex: 1;
+  padding: 0.5rem;
+  overflow: auto;
+  background-color: var(--secondary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.split-screen-code-editor .run-button {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.split-screen-code-editor .run-button:hover {
+  opacity: 0.9;
+}
+
+/* Responsive adjustments for code editor */
+@media (max-width: 768px) {
+  .split-screen-code-editor {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .split-screen-code-editor .editor-pane,
+  .split-screen-code-editor .preview-pane {
+    width: 100%;
+    border-right: none;
+  }
+
+  .split-screen-code-editor .editor-pane {
+    border-bottom: 1px solid var(--border);
+  }
 }
